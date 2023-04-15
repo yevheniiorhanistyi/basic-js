@@ -1,21 +1,30 @@
-const { NotImplementedError } = require('../extensions/index.js');
+function transform(arr) {
+  if(!Array.isArray(arr)) throw new Error (`'arr' parameter must be an instance of the Array!`);
 
-/**
- * Create transformed array based on the control sequences that original
- * array contains
- * 
- * @param {Array} arr initial array
- * @returns {Array} transformed array
- * 
- * @example
- * 
- * transform([1, 2, 3, '--double-next', 4, 5]) => [1, 2, 3, 4, 4, 5]
- * transform([1, 2, 3, '--discard-prev', 4, 5]) => [1, 2, 4, 5]
- * 
- */
-function transform(/* arr */) {
-  throw new NotImplementedError('Not implemented');
-  // remove line with error and write your code here
+  const newArray = [];
+
+  for(let i = 0; i < arr.length; i++) {
+
+      switch (arr[i]) {
+        case '--discard-next':
+          arr.length > i + 1 ? i++ : null
+          break;
+        case '--discard-prev':
+          newArray.length > 0 && newArray[newArray.length - 1] === arr[i - 1] ? newArray.pop() : null
+          break;
+        case '--double-next':
+          arr.length > i + 1 ? newArray.push(arr[i + 1]) : null
+          break;
+        case '--double-prev':
+          arr[i - 1] && arr[i - 2] != '--discard-next' ? newArray.push(arr[i - 1]) : null
+          break;
+        default:
+          newArray.push(arr[i]);
+      }
+      
+  }
+
+  return newArray
 }
 
 module.exports = {
